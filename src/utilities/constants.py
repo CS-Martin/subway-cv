@@ -1,0 +1,6 @@
+import pygame
+
+WIDTH = 800
+HEIGHT = 600
+DESIRED_FPS = 60
+SCREENRECT = pygame.Rect(0, 0, WIDTH, HEIGHT)
