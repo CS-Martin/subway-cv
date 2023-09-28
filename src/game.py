@@ -8,32 +8,27 @@ class Game:
         # Initialize Pygame
         pygame.init()
 
-        # Set up the game window
-        self.screen_width, self.screen_height = WIDTH, HEIGHT
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        pygame.display.set_caption("Subway Surfers")
+        # # Set up the game window
+        # self.screen_width, self.screen_height = WIDTH, HEIGHT
+        # self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        # pygame.display.set_caption("Subway Surfers")
 
-        self.lane_width = LANE_WIDTH
-        self.lane_gap = LANE_GAP
-        self.total_width = TOTAL_WIDTH
-        self.start_x = (self.screen_width - TOTAL_WIDTH) // 2
-        self.lane_positions = [self.start_x + i * (LANE_WIDTH + LANE_GAP) for i in range(NUM_LANES)]
+        # self.lane_width = LANE_WIDTH
+        # self.lane_gap = LANE_GAP
+        # self.total_width = TOTAL_WIDTH
+        # self.start_x = (self.screen_width - TOTAL_WIDTH) // 2
+        # self.lane_positions = [self.start_x + i * (LANE_WIDTH + LANE_GAP) for i in range(NUM_LANES)]
 
-        # Create entities
-        self.entity_classes = {"Player": Player}  # Add other entity classes as needed
-        self.player = Player(self, self.lane_positions[1])
+        # # Create entities
+        # self.entity_classes = {"Player": Player}  # Add other entity classes as needed
+        # self.player = Player(self, self.lane_positions[1])
 
-        # Game properties
-        self.clock = pygame.time.Clock()
+        # # Game properties
+        # self.clock = pygame.time.Clock()
 
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
     
-    def draw_lanes(self):
-        lane_color = (192, 192, 192)  # Gray color
-        for lane_x in self.lane_positions:
-            pygame.draw.rect(self.screen, lane_color, (lane_x, 0, LANE_WIDTH, self.screen_height))  # Draw smaller lanes
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
