@@ -1,13 +1,18 @@
-import pygame
-from src.states.base_state import StateManager
+from src.states.base_entity import BaseEntity
+from src.states.state_manager import StateManager
 from src.states.coin.coin_states import CoinIdleState
 
-class Coin:
-    def __init__(self, game):
-        self.game = game
+class Coin(BaseEntity):
+    def __init__(self, game, lane):
+        super().__init__(game, 30, 30, (255, 255, 0), 0, 0, lane=lane)  # Adjust size and color as needed
         self.state_manager = StateManager(CoinIdleState())
-        self.image = pygame.Surface((30, 30))  # Example size; replace with your actual image
-        self.image.fill((255, 215, 0))  # Example color; replace with your actual color
-        self.rect = self.image.get_rect()
-        self.rect.x = 100  # Example position; replace with your actual position
-        self.rect.y = 100
+
+    def handle_event(self, event):
+        self.state_manager.handle_event(self, event)
+
+    def update(self):
+        self.state_manager.update(self)
+
+    def draw(self, screen):
+        self.state_manager.draw(self, screen)
+        super().draw(screen)
