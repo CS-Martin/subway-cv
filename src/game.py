@@ -2,6 +2,7 @@ import pygame
 import sys
 from src.states.player.player import Player
 from src.states.coin.coin import Coin
+from src.states.train.train import Train
 from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS
 from src.states.base_entity import BaseEntity
 import random
@@ -23,16 +24,19 @@ class Game:
         self.start_x = (self.screen_width - self.total_width) // 2
         self.lane_positions = [self.start_x + i * (self.lane_width + self.lane_gap) for i in range(self.num_lanes)]
         # [315, 375, 435]
-        self.scroll_speed = 5
+        self.scroll_speed = 4
 
         # # Create entities
-        self.entity_classes = {"Player": Player, "Coin": Coin}
+        self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
         self.player = Player(self, self.lane_positions[1])
         self.coins = []
+        self.trains = []
 
         self.last_coin_spawn_time = pygame.time.get_ticks()
         self.coin_spawn_interval = 3000  # 10 seconds in milliseconds
 
+        self.last_train_spawn_time = pygame.time.get_ticks()
+        self.train_spawn_interval = 10000  # 10 seconds in milliseconds
 
         # Game properties
         self.clock = pygame.time.Clock()
@@ -57,11 +61,36 @@ class Game:
             self.coins.append(coin)
             self.last_coin_spawn_time = current_time
 
+    def spawn_idle_train(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_train_spawn_time > self.train_spawn_interval:
+            occupied_lanes = [train.lane for train in self.trains]
+            available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
+
+            if available_lanes:
+                lane = random.choice(available_lanes)
+                train = Train(self, lane, is_moving=False)
+                self.trains.append(train)
+
+            self.last_train_spawn_time = current_time
+
+
     def update_entities(self):
         self.player.update()
 
         for coin in self.coins:
-            coin.update()
+            # Remove coins that are off the screen
+            if coin.rect.y > self.screen_height:
+                self.coins.remove(coin)
+            else:
+                coin.update()
+
+        for train in self.trains:
+            # Remove trains that are off the screen
+            if train.rect.y > self.screen_height:
+                self.trains.remove(train)
+            else:
+                train.update()
 
     def draw_entities(self):
         # Draw entities
@@ -71,6 +100,9 @@ class Game:
 
         for coin in self.coins:
             coin.draw(self.screen)
+
+        for train in self.trains:
+            train.draw(self.screen)
 
     def draw_lanes(self):
         for lane in self.lane_positions:
@@ -84,6 +116,8 @@ class Game:
             self.draw_entities()
 
             self.spawn_coin()
+            self.spawn_idle_train()
+            # self.spawn_moving_train()
 
             # Update the display
             pygame.display.flip()

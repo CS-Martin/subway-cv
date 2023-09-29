@@ -5,19 +5,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 class IdleState(BaseState):
-    def handle_event(self, player, event):
+    def handle_event(self, coin, event):
         pass
-    def update(self, player):
+    def update(self, coin):
         pass
 
-    def draw(self, player, screen):
+    def draw(self, coin, screen):
         pass
 
 class PickedUpState(BaseState):
-    def handle_event(self, player, event):
+    def handle_event(self, coin, event):
         pass
-    def update(self, player):
+    def update(self, coin):
         pass
 
-    def draw(self, player, screen):
+    def draw(self, coin, screen):
         pass
