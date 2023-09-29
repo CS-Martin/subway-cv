@@ -17,12 +17,7 @@ class RunState(BaseState):
                 player.state_manager.change_state(TurnRightState())
 
     def update(self, player):
-        # Log x and y
-        logger.debug("Player x: {}".format(player.rect.x))
-        logger.debug("Player y: {}".format(player.rect.y))
-
-        # Log lane
-        logger.info("Player lane: {}".format(player.lane))
+        pass
 
     def draw(self, player, screen):
         pass
@@ -79,7 +74,6 @@ class TurnLeftState(BaseState):
     def draw(self, player, screen):
         pass
 
-
 class JumpState(BaseState):
     def handle_event(self, player, event):
         pass
@@ -100,13 +94,3 @@ class CrashedState(BaseState):
     def draw(self, player, screen):
         pass
 
-
-class PickupCoinState(BaseState):
-    def handle_event(self, player, event):
-        pass
-
-    def update(self, player):
-        pass
-
-    def draw(self, player, screen):
-        pass

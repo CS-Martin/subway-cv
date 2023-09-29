@@ -6,6 +6,11 @@ from src.states.train.train import Train
 from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, NUM_COINS
 from src.states.base_entity import BaseEntity
 import random
+from pygame.sprite import Group, GroupSingle
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Game:
     def __init__(self):
@@ -29,9 +34,9 @@ class Game:
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
-        self.player = Player(self, self.lane_positions[1])  # Spawn player in the middle lane
-        self.coins = []
-        self.trains = []
+        self.player = Player(self, self.lane_positions[1])
+        self.coins = Group()
+        self.trains = Group()
 
         # Spawn timers
         self.last_coin_spawn_time = pygame.time.get_ticks()
@@ -53,7 +58,7 @@ class Game:
                 coin = Coin(self, lane)
                 coin.rect.y += i * coin.rect.height + i * COIN_GAP
 
-                self.coins.append(coin)
+                self.coins.add(coin)
 
             self.last_coin_spawn_time = current_time
 
@@ -69,8 +74,8 @@ class Game:
             if available_lanes:
                 train1 = Train(self, idle_lane, is_moving=False)
                 train2 = Train(self, moving_lane, is_moving=True)
-                self.trains.append(train1)
-                self.trains.append(train2)
+                self.trains.add(train1)
+                self.trains.add(train2)
 
             self.last_train_spawn_time = current_time
 
@@ -87,12 +92,12 @@ class Game:
 
     def update_entities(self):
         self.player.update()
-        
-        for coin in self.coins:
-            coin.update()
-        
-        for train in self.trains:
-            train.update()
+        self.coins.update()
+        self.trains.update()
+
+        # collisions = pygame.sprite.spritecollide(self.player, self.coins, False)
+        # if collisions:
+        #     logger.debug("Collisions: {}".format(collisions))
 
     def draw_entities(self):
         # Draw entities
@@ -100,10 +105,10 @@ class Game:
         self.draw_lanes()  # Draw lanes
         self.player.draw(self.screen)
 
-        for coin in self.coins:
+        for coin in self.coins.sprites():
             coin.draw(self.screen)
 
-        for train in self.trains:
+        for train in self.trains.sprites():
             train.draw(self.screen)
 
     def run(self):

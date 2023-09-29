@@ -1,8 +1,10 @@
 import pygame
+from pygame.sprite import Sprite
 from src.utilities.constants import START_Y
 
-class BaseEntity:
+class BaseEntity(Sprite):
     def __init__(self, game, width, height, color, lane=None):
+        super().__init__()
         self.game = game
         self.image = pygame.Surface((width, height))
         self.image.fill(color)
@@ -10,7 +12,6 @@ class BaseEntity:
         self.lane = lane 
         self.rect.x = 0
         self.rect.y = 0
-        
     
     def set_lane_position(self, lane):
         if lane is not None:
