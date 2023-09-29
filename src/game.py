@@ -23,6 +23,7 @@ class Game:
         self.start_x = (self.screen_width - self.total_width) // 2
         self.lane_positions = [self.start_x + i * (self.lane_width + self.lane_gap) for i in range(self.num_lanes)]
         # [315, 375, 435]
+        self.scroll_speed = 5
 
         # # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin}
@@ -30,7 +31,7 @@ class Game:
         self.coins = []
 
         self.last_coin_spawn_time = pygame.time.get_ticks()
-        self.coin_spawn_interval = 10000  # 10 seconds in milliseconds
+        self.coin_spawn_interval = 3000  # 10 seconds in milliseconds
 
 
         # Game properties
@@ -51,10 +52,9 @@ class Game:
     def spawn_coin(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
-            for _ in range(10):
-                lane = random.choice(self.lane_positions)
-                coin = Coin(self, lane)
-                self.coins.append(coin)
+            lane = random.choice(self.lane_positions)
+            coin = Coin(self, lane)
+            self.coins.append(coin)
             self.last_coin_spawn_time = current_time
 
     def update_entities(self):

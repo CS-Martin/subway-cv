@@ -17,6 +17,7 @@ class Coin(BaseEntity):
 
     def update(self):
         logger.debug(self.lane)
+        self.rect.y += self.game.scroll_speed
         self.state_manager.update(self)
 
     def draw(self, screen):
