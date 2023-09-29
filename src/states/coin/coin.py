@@ -30,7 +30,7 @@ class Coin(BaseEntity):
         # Remove the coin if it goes off the screen
         if self.rect.y > self.game.screen_height:
             logger.debug('Removing coin')
-            self.game.coins.remove(self)
+            self.kill()
 
         self.state_manager.update(self)
 
