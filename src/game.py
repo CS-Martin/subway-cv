@@ -1,30 +1,40 @@
 import pygame
 import sys
 from src.states.player.player import Player
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH
+from src.states.coin.coin import Coin
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS
 from src.states.base_entity import BaseEntity
+import random
+
 class Game:
     def __init__(self):
         # Initialize Pygame
         pygame.init()
 
-        # # Set up the game window
-        # self.screen_width, self.screen_height = WIDTH, HEIGHT
-        # self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        # pygame.display.set_caption("Subway Surfers")
+        # Set up the game window
+        self.screen_width, self.screen_height = WIDTH, HEIGHT
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        pygame.display.set_caption("Subway Surfers")
 
-        # self.lane_width = LANE_WIDTH
-        # self.lane_gap = LANE_GAP
-        # self.total_width = TOTAL_WIDTH
-        # self.start_x = (self.screen_width - TOTAL_WIDTH) // 2
-        # self.lane_positions = [self.start_x + i * (LANE_WIDTH + LANE_GAP) for i in range(NUM_LANES)]
+        self.num_lanes = NUM_LANES
+        self.lane_width = LANE_WIDTH
+        self.lane_gap = LANE_GAP
+        self.total_width = TOTAL_WIDTH
+        self.start_x = (self.screen_width - self.total_width) // 2
+        self.lane_positions = [self.start_x + i * (self.lane_width + self.lane_gap) for i in range(self.num_lanes)]
+        # [315, 375, 435]
 
         # # Create entities
-        # self.entity_classes = {"Player": Player}  # Add other entity classes as needed
-        # self.player = Player(self, self.lane_positions[1])
+        self.entity_classes = {"Player": Player, "Coin": Coin}
+        self.player = Player(self, self.lane_positions[1])
+        self.coins = []
 
-        # # Game properties
-        # self.clock = pygame.time.Clock()
+        self.last_coin_spawn_time = pygame.time.get_ticks()
+        self.coin_spawn_interval = 10000  # 10 seconds in milliseconds
+
+
+        # Game properties
+        self.clock = pygame.time.Clock()
 
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
@@ -38,15 +48,33 @@ class Game:
             # Delegate events to entities
             self.player.handle_event(event)
 
+    def spawn_coin(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
+            for _ in range(10):
+                lane = random.choice(self.lane_positions)
+                coin = Coin(self, lane)
+                self.coins.append(coin)
+            self.last_coin_spawn_time = current_time
+
     def update_entities(self):
-        # Update entities
         self.player.update()
+
+        for coin in self.coins:
+            coin.update()
 
     def draw_entities(self):
         # Draw entities
         self.screen.fill((255, 255, 255))  # Clear the screen
         self.draw_lanes()  # Draw lanes
         self.player.draw(self.screen)
+
+        for coin in self.coins:
+            coin.draw(self.screen)
+
+    def draw_lanes(self):
+        for lane in self.lane_positions:
+            pygame.draw.rect(self.screen, (0, 0, 0), (lane, 0, self.lane_width, self.screen_height), 1)
 
     def run(self):
         # Game loop
@@ -55,8 +83,10 @@ class Game:
             self.update_entities()
             self.draw_entities()
 
+            self.spawn_coin()
+
             # Update the display
             pygame.display.flip()
 
             # Cap the frame rate
-            self.clock.tick(60)
+            self.clock.tick(DESIRED_FPS)

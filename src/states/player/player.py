@@ -1,6 +1,9 @@
 from src.states.base_entity import BaseEntity
 from src.states.state_manager import StateManager
 from src.states.player.player_states import RunState
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Player(BaseEntity):
     def __init__(self, game, lane):
@@ -8,11 +11,13 @@ class Player(BaseEntity):
         self.state_manager = StateManager(RunState())
         self.move_speed = 5  # Adjust move_speed as needed
         self.set_lane_position(lane)  # Call the set_lane_position method
+        self.set_height()
 
     def handle_event(self, event):
         self.state_manager.handle_event(self, event)
 
     def update(self):
+        logger.debug(self.lane)
         self.state_manager.update(self)
 
     def draw(self, screen):
