@@ -9,7 +9,10 @@ class IdleState(BaseState):
         logger.debug('Coin in idle state')
 
     def update(self, coin):
-        pass
+        player_collision = coin.rect.colliderect(coin.game.player)
+        logger.debug('Player collision: {}'.format(player_collision))
+        if player_collision:
+            coin.state_manager.change_state(PickedUpState())
 
     def draw(self, coin, screen):
         pass
@@ -19,7 +22,8 @@ class PickedUpState(BaseState):
         logger.debug('Coin in picked up state')
 
     def update(self, coin):
-        pass
+        coin.game.player.score += 1
+        coin.kill()
 
     def draw(self, coin, screen):
         pass

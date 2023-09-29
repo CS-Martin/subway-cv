@@ -6,7 +6,11 @@ from src.states.train.train import Train
 from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, NUM_COINS
 from src.states.base_entity import BaseEntity
 import random
-from pygame.sprite import Group
+from pygame.sprite import Group, GroupSingle
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Game:
     def __init__(self):
@@ -30,7 +34,7 @@ class Game:
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
-        self.player = Player(self, self.lane_positions[1])  # Spawn player in the middle lane
+        self.player = Player(self, self.lane_positions[1])
         self.coins = Group()
         self.trains = Group()
 
@@ -88,12 +92,12 @@ class Game:
 
     def update_entities(self):
         self.player.update()
-        
-        for coin in self.coins.sprites():
-            coin.update()
-        
-        for train in self.trains.sprites():
-            train.update()
+        self.coins.update()
+        self.trains.update()
+
+        # collisions = pygame.sprite.spritecollide(self.player, self.coins, False)
+        # if collisions:
+        #     logger.debug("Collisions: {}".format(collisions))
 
     def draw_entities(self):
         # Draw entities
