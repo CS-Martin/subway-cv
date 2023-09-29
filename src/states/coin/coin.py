@@ -7,17 +7,31 @@ logger = logging.getLogger(__name__)
 
 class Coin(BaseEntity):
     def __init__(self, game, lane):
-        super().__init__(game, 50, 50, (255, 255, 0), lane=lane)  # Starting in the middle lane
+        logger.debug('Initializing coin')
+
+        super().__init__(game, 50, 50, (255, 255, 0), lane=lane)  
         self.state_manager = StateManager(IdleState())
-        self.set_lane_position(lane)  # Call the set_lane_position method
-        self.set_height()
+        self.set_lane_position(lane)
+        self.set_start_y()
+        self.game = game
+
+        logger.info('Coin initialized at lane {}'.format(self.lane))
 
     def handle_event(self, event):
         self.state_manager.handle_event(self, event)
 
     def update(self):
-        logger.debug(self.lane)
+        logger.debug('Coin lane: {}'.format(self.lane))
+
+        # Scroll the coin with the screen
         self.rect.y += self.game.scroll_speed
+        logger.debug('Coin rect.y: {}'.format(self.rect.y))
+
+        # Remove the coin if it goes off the screen
+        if self.rect.y > self.game.screen_height:
+            logger.debug('Removing coin')
+            self.game.coins.remove(self)
+
         self.state_manager.update(self)
 
     def draw(self, screen):

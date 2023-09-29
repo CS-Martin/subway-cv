@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 
 class IdleState(BaseState):
     def handle_event(self, coin, event):
-        pass
+        logger.debug('Coin in idle state')
+
     def update(self, coin):
         pass
 
@@ -15,7 +16,8 @@ class IdleState(BaseState):
 
 class PickedUpState(BaseState):
     def handle_event(self, coin, event):
-        pass
+        logger.debug('Coin in picked up state')
+
     def update(self, coin):
         pass
 

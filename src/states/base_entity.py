@@ -1,4 +1,5 @@
 import pygame
+from src.utilities.constants import START_Y
 
 class BaseEntity:
     def __init__(self, game, width, height, color, lane=None):
@@ -16,13 +17,11 @@ class BaseEntity:
             self.lane = lane
             self.rect.x = lane
 
-    def set_height(self):
+    def set_start_y(self):
         if isinstance(self, self.game.get_entity_class("Player")):
             self.rect.y = self.game.screen_height - self.rect.height
         else:
-            # For other entities, start at the top
-            self.rect.y = 0
-
+            self.rect.y = START_Y  # Start off screen to give the illusion of spawning
 
     def handle_event(self, event):
         pass

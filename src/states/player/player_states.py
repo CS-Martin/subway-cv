@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 class RunState(BaseState):
     def handle_event(self, player, event):
-        logger.info("Handling event in RunState")
+        logger.info('Player in RunState')
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -17,11 +17,9 @@ class RunState(BaseState):
                 player.state_manager.change_state(TurnRightState())
 
     def update(self, player):
-        logger.info("Updating Player in RunState")
-
         # Log x and y
-        logger.info("Player x: {}".format(player.rect.x))
-        logger.info("Player y: {}".format(player.rect.y))
+        logger.debug("Player x: {}".format(player.rect.x))
+        logger.debug("Player y: {}".format(player.rect.y))
 
         # Log lane
         logger.info("Player lane: {}".format(player.lane))
@@ -31,13 +29,15 @@ class RunState(BaseState):
 
 class TurnRightState(BaseState):
     def handle_event(self, player, event):
+        logger.info('Player in TurnRightState')
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.state_manager.change_state(TurnLeftState())
             elif event.key == pygame.K_RIGHT:
                 logger.info("Cannot move anymore right")
 
-    def update(self, player):
+    def update(self, player):   
         if player.lane == player.game.lane_positions[0]:
             logger.info("Setting lane position to {}".format(player.game.lane_positions[1]))
             player.set_lane_position(player.game.lane_positions[1])
@@ -55,6 +55,8 @@ class TurnRightState(BaseState):
 
 class TurnLeftState(BaseState):
     def handle_event(self, player, event):
+        logger.info('Player in TurnLeftState')
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 logger.info("Cannot move anymore left")
@@ -80,38 +82,31 @@ class TurnLeftState(BaseState):
 
 class JumpState(BaseState):
     def handle_event(self, player, event):
-        # Additional logic for handling events during a jump
         pass
 
     def update(self, player):
-        # Implement player jump state update logic
         pass
 
     def draw(self, player, screen):
-        # Implement player jump state draw logic
         pass
 
 class CrashedState(BaseState):
     def handle_event(self, player, event):
-        pass  # No input during the crashed state
+        pass 
 
     def update(self, player):
-        # Implement player crashed state update logic
         pass
 
     def draw(self, player, screen):
-        # Implement player crashed state draw logic
         pass
 
 
 class PickupCoinState(BaseState):
     def handle_event(self, player, event):
-        pass  # No additional events during pickup state
+        pass
 
     def update(self, player):
-        # Implement player pickup state update logic
         pass
 
     def draw(self, player, screen):
-        # Implement player pickup state draw logic
         pass

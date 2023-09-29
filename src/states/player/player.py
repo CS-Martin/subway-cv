@@ -7,17 +7,24 @@ logger = logging.getLogger(__name__)
 
 class Player(BaseEntity):
     def __init__(self, game, lane):
-        super().__init__(game, 50, 50, (0, 128, 255), lane=lane)  # Starting in the middle lane
+        logger.debug('Initializing player')
+
+        super().__init__(game, 50, 50, (0, 128, 255), lane=lane)  
         self.state_manager = StateManager(RunState())
-        self.move_speed = 5  # Adjust move_speed as needed
-        self.set_lane_position(lane)  # Call the set_lane_position method
-        self.set_height()
+        self.set_lane_position(lane)
+        self.set_start_y()
+        self.game = game
+        self.score = 0
+
+        logger.info('Player initialized at lane {}'.format(self.lane))
 
     def handle_event(self, event):
         self.state_manager.handle_event(self, event)
 
     def update(self):
-        logger.debug(self.lane)
+        logger.debug('Player lane: {}'.format(self.lane))
+        logger.debug('Score: {}'.format(self.score))
+
         self.state_manager.update(self)
 
     def draw(self, screen):

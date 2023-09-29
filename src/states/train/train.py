@@ -1,6 +1,7 @@
 from src.states.base_entity import BaseEntity
 from src.states.state_manager import StateManager
 from src.states.train.train_states import IdleState, MovingState
+from src.utilities.constants import TRAIN_HEIGHTS
 import logging
 import random
 
@@ -8,21 +9,32 @@ logger = logging.getLogger(__name__)
 
 class Train(BaseEntity):
     def __init__(self, game, lane, is_moving=False):
-        # Randomize the height of the train
-        heights = [200, 300, 400, 500]
-        height = random.choice(heights)
+        logger.debug('Initializing train')
 
-        super().__init__(game, 50, height, (255, 0, 0), lane=lane)  # Starting in the middle lane
-        self.state_manager = StateManager(IdleState())
-        self.set_lane_position(lane)  # Call the set_lane_position method
-        self.set_height()
+        height = random.choice(TRAIN_HEIGHTS)
+        super().__init__(game, 50, height, (255, 0, 0), lane=lane)
+        self.state_manager = StateManager(IdleState()) if not is_moving else StateManager(MovingState())
+        self.set_lane_position(lane) 
+        self.set_start_y()
+        self.height = height
+        self.game = game
+
+        logger.info('Train initialized at lane {} with height {}'.format(self.lane, self.height))
 
     def handle_event(self, event):
         self.state_manager.handle_event(self, event)
 
     def update(self):
-        logger.debug(self.lane)
-        self.rect.y += self.game.scroll_speed  # Scroll the train with the screen
+        logger.debug('Train lane: {}'.format(self.lane))
+        logger.debug('Train height: {}'.format(self.height))
+        logger.debug('Train rect.y: {}'.format(self.rect.y))
+        
+        self.rect.y += self.game.scroll_speed 
+
+        if self.rect.y > self.game.screen_height:
+            logger.debug('Removing train')
+            self.game.trains.remove(self)
+
         self.state_manager.update(self)
 
     def draw(self, screen):

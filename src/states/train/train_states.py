@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 
 class IdleState(BaseState):
     def handle_event(self, train, event):
-        pass
+        logger.debug('Train in idle state')
+
     def update(self, train):
         pass
 
@@ -15,10 +16,10 @@ class IdleState(BaseState):
 
 class MovingState(BaseState):
     def handle_event(self, train, event):
-        pass
+        logger.debug('Train in moving state')
+
     def update(self, train):
-        train.rect.y += 2
-        # self.train.rect.y += self.train.game.scroll_speed
+        train.rect.y += 2  # Moving trains have +2 speed
 
     def draw(self, train, screen):
         pass
