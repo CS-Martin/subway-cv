@@ -31,6 +31,7 @@ class Game:
         self.start_x = START_X
         self.lane_positions = LANE_POSITIONS
         self.scroll_speed = SCROLL_SPEED
+        self.game_over = False
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
@@ -79,6 +80,19 @@ class Game:
 
             self.last_train_spawn_time = current_time
 
+    def display_game_over_screen(self):
+        print("Game Over! Press ESC to exit.")
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type==pygame.KEYDOWN:
+                    if event.key==pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
         
@@ -95,10 +109,6 @@ class Game:
         self.coins.update()
         self.trains.update()
 
-        # collisions = pygame.sprite.spritecollide(self.player, self.coins, False)
-        # if collisions:
-        #     logger.debug("Collisions: {}".format(collisions))
-
     def draw_entities(self):
         # Draw entities
         self.screen.fill((255, 255, 255))  # Clear the screen
@@ -113,7 +123,7 @@ class Game:
 
     def run(self):
         # Game loop
-        while True:
+        while not self.game_over:
             self.handle_events()
             self.update_entities()
             self.draw_entities()
@@ -121,8 +131,12 @@ class Game:
             self.spawn_coins()
             self.spawn_trains()
 
-            # Update the display
             pygame.display.flip()
 
-            # Cap the frame rate
             self.clock.tick(DESIRED_FPS)
+
+            if self.game_over:
+                self.display_game_over_screen()
+
+
+        

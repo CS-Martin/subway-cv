@@ -17,7 +17,12 @@ class RunState(BaseState):
                 player.state_manager.change_state(TurnRightState())
 
     def update(self, player):
-        pass
+        for train in player.game.trains:
+            train_collision = player.rect.colliderect(train)
+            if train_collision:
+                logger.info('Player collided with train')
+                player.state_manager.change_state(CrashedState())
+                return
 
     def draw(self, player, screen):
         pass
@@ -86,10 +91,11 @@ class JumpState(BaseState):
 
 class CrashedState(BaseState):
     def handle_event(self, player, event):
-        pass 
+        logger.info('Player in CrashedState')
 
     def update(self, player):
-        pass
+        logger.info('Player in CrashedState update')
+        player.game.game_over = True
 
     def draw(self, player, screen):
         pass
