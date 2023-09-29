@@ -10,3 +10,13 @@
     - [ ] Make coins collied with player
 - [ ] Add scoring based on distance and coins
 - [ ] Add leaderboards
+
+## Installation
+```
+pip install -r requirements.txt
+```
+
+## Usage
+```
+python3 main.py
+```
