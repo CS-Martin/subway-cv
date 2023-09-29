@@ -3,7 +3,7 @@ import sys
 from src.states.player.player import Player
 from src.states.coin.coin import Coin
 from src.states.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, NUM_COINS
 from src.states.base_entity import BaseEntity
 import random
 
@@ -40,23 +40,16 @@ class Game:
         self.last_train_spawn_time = pygame.time.get_ticks()
         self.train_spawn_interval = 10000  # 10 seconds
 
-    def get_entity_class(self, class_name):
-        return self.entity_classes.get(class_name, BaseEntity)
-    
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            self.player.handle_event(event)
+    def draw_lanes(self):
+        for lane in self.lane_positions:
+            pygame.draw.rect(self.screen, (0, 0, 0), (lane, 0, self.lane_width, self.screen_height), 1)
 
     def spawn_coins(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
             lane = random.choice(self.lane_positions)
 
-            for i in range(3):
+            for i in range(NUM_COINS):
                 coin = Coin(self, lane)
                 coin.rect.y += i * coin.rect.height + i * COIN_GAP
 
@@ -81,6 +74,17 @@ class Game:
 
             self.last_train_spawn_time = current_time
 
+    def get_entity_class(self, class_name):
+        return self.entity_classes.get(class_name, BaseEntity)
+        
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            self.player.handle_event(event)
+
     def update_entities(self):
         self.player.update()
         
@@ -101,10 +105,6 @@ class Game:
 
         for train in self.trains:
             train.draw(self.screen)
-
-    def draw_lanes(self):
-        for lane in self.lane_positions:
-            pygame.draw.rect(self.screen, (0, 0, 0), (lane, 0, self.lane_width, self.screen_height), 1)
 
     def run(self):
         # Game loop
