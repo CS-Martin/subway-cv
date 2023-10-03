@@ -3,11 +3,21 @@ from pygame.sprite import Sprite
 from src.utilities.constants import START_Y
 
 class BaseEntity(Sprite):
-    def __init__(self, game, width, height, color, lane=None):
+    def __init__(self, game, width, height, color_or_image, lane=None):
         super().__init__()
         self.game = game
-        self.image = pygame.Surface((width, height))
-        self.image.fill(color)
+        
+        # Check if image parameter has image
+        if isinstance(color_or_image, pygame.Surface):
+            self.image = color_or_image
+        else:
+            self.image = pygame.Surface((width, height))
+            self.image.fill(color_or_image)
+
+        # Check if image is a coin sprite and resize it
+        if self.game.get_entity_class("Coin") == type(self):
+            self.image = pygame.transform.scale(self.image, (50, 50))
+
         self.rect = self.image.get_rect()
         self.lane = lane 
         self.rect.x = 0
