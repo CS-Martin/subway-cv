@@ -17,10 +17,6 @@ class BaseEntity(Sprite):
         # Check if image is a coin sprite and resize it
         if self.game.get_entity_class("Coin") == type(self):
             self.image = pygame.transform.scale(self.image, (height, width))
-
-        # Check if image is a player sprite and resize it
-        # if self.game.get_entity_class("Player") == type(self):
-        #     self.image = pygame.transform.scale(self.image, (height, width))
             
         self.rect = self.image.get_rect()
         self.lane = lane 
