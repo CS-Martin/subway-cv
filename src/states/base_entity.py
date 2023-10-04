@@ -16,8 +16,12 @@ class BaseEntity(Sprite):
 
         # Check if image is a coin sprite and resize it
         if self.game.get_entity_class("Coin") == type(self):
-            self.image = pygame.transform.scale(self.image, (50, 50))
+            self.image = pygame.transform.scale(self.image, (height, width))
 
+        # Check if image is a player sprite and resize it
+        # if self.game.get_entity_class("Player") == type(self):
+        #     self.image = pygame.transform.scale(self.image, (height, width))
+            
         self.rect = self.image.get_rect()
         self.lane = lane 
         self.rect.x = 0
@@ -30,7 +34,7 @@ class BaseEntity(Sprite):
 
     def set_start_y(self):
         if isinstance(self, self.game.get_entity_class("Player")):
-            self.rect.y = self.game.screen_height - self.rect.height
+            self.rect.y = self.game.screen_height - (self.rect.height + 20)
         else:
             self.rect.y = START_Y  # Start off screen to give the illusion of spawning
 
