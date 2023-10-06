@@ -1,4 +1,5 @@
 import pygame
+import random
 import sys
 from src.states.player.player import Player
 from src.states.coin.coin import Coin
@@ -46,10 +47,22 @@ class Game:
         self.last_train_spawn_time = pygame.time.get_ticks()
         self.train_spawn_interval = 10000  # 10 seconds
 
-    def draw_lanes(self):
-        for lane in self.lane_positions:
-            pygame.draw.rect(self.screen, (0, 0, 0), (lane, 0, self.lane_width, self.screen_height), 1)
 
+    def draw_lanes(self):
+        # Load and scale the asphalt sprite
+        original_asphalt = [pygame.image.load(path)
+                            for path in ['assets/Asphalt/Asphalt1.png', 'assets/Asphalt/Asphalt2.png',
+                                         'assets/Asphalt/Asphalt3.png', 'assets/Asphalt/Asphalt4.png']]
+        scaled_asphalt = [pygame.transform.scale(img, (100, img.get_height())) for img in original_asphalt]
+        
+        # Randomize the asphalt sprite for each lane
+        self.asphalt = [random.choice(scaled_asphalt) for _ in range(self.num_lanes)]
+
+        for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
+            for j, lane in enumerate(self.lane_positions):
+                logger.debug('Drawing lane {} at position {}'.format(j, lane))
+                self.screen.blit(self.asphalt[j], (lane, i * self.asphalt[j].get_height()))
+                
     def spawn_coins(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
