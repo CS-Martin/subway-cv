@@ -4,6 +4,7 @@ from src.states.train.train_states import IdleState, MovingState
 from src.utilities.constants import TRAIN_HEIGHTS
 import logging
 import random
+import pygame
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +12,10 @@ class Train(BaseEntity):
     def __init__(self, game, lane, is_moving=False):
         logger.debug('Initializing train')
 
+        self.train_sprite = (pygame.image.load("assets/Firetruck.png"))
+        
         height = random.choice(TRAIN_HEIGHTS)
-        super().__init__(game, 50, height, (255, 0, 0), lane=lane)
+        super().__init__(game, 100, height, self.train_sprite, lane=lane)
         self.state_manager = StateManager(IdleState()) if not is_moving else StateManager(MovingState())
         self.set_lane_position(lane) 
         self.set_start_y()
