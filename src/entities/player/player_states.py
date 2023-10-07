@@ -1,4 +1,4 @@
-from src.states.base_state import BaseState
+from src.entities.base_state import BaseState
 import pygame
 import logging 
 

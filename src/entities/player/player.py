@@ -1,6 +1,7 @@
-from src.states.base_entity import BaseEntity
-from src.states.state_manager import StateManager
-from src.states.player.player_states import RunState
+from src.entities.base_entity import BaseEntity
+from src.entities.state_manager import StateManager
+from src.entities.player.player_states import RunState
+from src.utilities.constants import PLAYER_SPRITES
 import logging
 import pygame
 
@@ -11,8 +12,8 @@ class Player(BaseEntity):
         logger.debug('Initializing player')
 
         self.char_sprites = [pygame.transform.scale(pygame.image.load(path), (50, 50))
-                             for path in ['assets/Player/1.png', 'assets/Player/2.png', 
-                                          'assets/Player/3.png', 'assets/Player/4.png']]
+                             for path in PLAYER_SPRITES]
+        
         self.current_frame = 0
         self.frame_counter = 0
         self.frame_delay = 7  # Adjust this for desired speed
@@ -21,6 +22,7 @@ class Player(BaseEntity):
         self.state_manager = StateManager(RunState())
         self.set_lane_position(lane)
         self.set_start_y()
+        self.distance = 0
         self.game = game
         self.score = 0
 
@@ -36,9 +38,12 @@ class Player(BaseEntity):
             self.image = self.char_sprites[self.current_frame]
             self.frame_counter = 0
         
+        self.distance += self.game.scroll_speed
+
         logger.debug('Player lane: {}'.format(self.lane))
         logger.debug('Score: {}'.format(self.score))
-
+        logger.debug('Distance: {}'.format(self.distance))
+        
         self.state_manager.update(self)
 
     def draw(self, screen):
