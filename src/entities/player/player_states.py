@@ -1,5 +1,5 @@
 from src.entities.base_state import BaseState
-
+from src.utilities.constants import PLAYER_CRASH_SFX, PLAYER_DEATH_SFX
 import pygame
 import logging 
 
@@ -8,8 +8,6 @@ logger = logging.getLogger(__name__)
 class RunState(BaseState):
     def handle_event(self, player, event):
         logger.info('Player in RunState')
-        
-        
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -98,7 +96,16 @@ class CrashedState(BaseState):
 
     def update(self, player):
         logger.info('Player in CrashedState update')
+
+        # Sound game sfx
         player.game.game_sound.stop()
+        
+        # Play player crash sfx
+        player_crash_sound = pygame.mixer.Sound(PLAYER_CRASH_SFX)
+        player_death_sound = pygame.mixer.Sound(PLAYER_DEATH_SFX)
+        player_crash_sound.play()
+        player_death_sound.play()
+        
         player.game.game_over = True
 
     def draw(self, player, screen):

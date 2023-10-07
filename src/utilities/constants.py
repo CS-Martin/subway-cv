@@ -22,7 +22,9 @@ CWD = os.getcwd()
 
 PLAYER_PATH = os.path.join(CWD, 'assets', 'player')
 PLAYERS = os.listdir(PLAYER_PATH)
-PLAYER_SPRITES = [os.path.join(PLAYER_PATH, player) for player in PLAYERS]
+PLAYER_SPRITES = [os.path.join(PLAYER_PATH, player) for player in PLAYERS if os.path.isfile(os.path.join(PLAYER_PATH, player))]
+PLAYER_CRASH_SFX = os.path.join(CWD, 'assets', 'player', 'player-sfx', 'player-crashed-sfx.wav')
+PLAYER_DEATH_SFX = os.path.join(CWD, 'assets', 'player', 'player-sfx', 'player-death-sfx.wav')
 
 COIN_PATH = os.path.join(CWD, 'assets', 'coin')
 COINS = os.listdir(COIN_PATH)
