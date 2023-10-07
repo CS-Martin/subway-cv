@@ -25,11 +25,16 @@ PLAYER_SPRITES = [os.path.join(PLAYER_PATH, player) for player in PLAYERS]
 
 COIN_PATH = os.path.join(CWD, 'assets', 'Coin')
 COINS = os.listdir(COIN_PATH)
-COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS]
+# COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS]
+COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS if os.path.isfile(os.path.join(COIN_PATH, coin))]
+
+COIN_COLLISION_SOUND = os.path.join(CWD, 'assets', 'Coin', 'Sound', 'coin-collision-sound.wav')
+
 
 TRAIN_PATH = os.path.join(CWD, 'assets', 'Firetruck')
 TRAINS = os.listdir(TRAIN_PATH)
 TRAIN_SPRITES = [os.path.join(TRAIN_PATH, train) for train in TRAINS]
+
 
 ASPHALT_PATH = os.path.join(CWD, 'assets', 'Asphalt')
 ASPHALTS = os.listdir(ASPHALT_PATH)
