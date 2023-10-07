@@ -32,6 +32,11 @@ class BaseEntity(Sprite):
             self.lane = lane
             self.rect.x = lane
 
+            if self.game.get_entity_class("Coin") == type(self) or self.game.get_entity_class("Player") == type(self):
+                self.rect.x += self.rect.width // 2
+
+
+
     def set_start_y(self):
         if isinstance(self, self.game.get_entity_class("Player")):
             self.rect.y = self.game.screen_height - (self.rect.height + 20)

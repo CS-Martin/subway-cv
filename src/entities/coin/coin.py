@@ -1,6 +1,7 @@
-from src.states.base_entity import BaseEntity
-from src.states.state_manager import StateManager
-from src.states.coin.coin_states import IdleState
+from src.entities.base_entity import BaseEntity
+from src.entities.state_manager import StateManager
+from src.entities.coin.coin_states import IdleState
+from src.utilities.constants import COIN_SPRITES
 import logging
 import pygame
 
@@ -10,11 +11,11 @@ class Coin(BaseEntity):
     def __init__(self, game, lane):
         logger.debug('Initializing coin')
 
-        self.coin_sprites = [pygame.transform.scale(pygame.image.load(path), (50, 50))
-                             for path in ['assets\Coin\Coin-1.png', 'assets\Coin\Coin-2.png',
-                                          'assets\Coin\Coin-3.png', 'assets\Coin\Coin-4.png',
-                                          'assets\Coin\Coin-5.png', 'assets\Coin\Coin-6.png',
-                                          'assets\Coin\Coin-7.png']]
+        self.coin_sprites = [pygame.transform.scale(pygame.image.load(coin), (50, 50))
+                             for coin in COIN_SPRITES]
+        
+        logger.debug('Coin sprites: {}'.format(self.coin_sprites))
+
         self.current_frame = 0
         self.frame_counter = 0  
         self.frame_delay = 7 

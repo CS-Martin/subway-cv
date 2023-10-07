@@ -1,4 +1,5 @@
 import pygame
+import os
 
 WIDTH = 1200 
 HEIGHT = 800
@@ -15,3 +16,22 @@ START_Y = -1 * max(TRAIN_HEIGHTS)
 SCROLL_SPEED = 4
 COIN_GAP = 20
 NUM_COINS = 3
+
+CWD = os.getcwd()
+
+PLAYER_PATH = os.path.join(CWD, 'assets', 'Player')
+PLAYERS = os.listdir(PLAYER_PATH)
+PLAYER_SPRITES = [os.path.join(PLAYER_PATH, player) for player in PLAYERS]
+
+COIN_PATH = os.path.join(CWD, 'assets', 'Coin')
+COINS = os.listdir(COIN_PATH)
+COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS]
+
+TRAIN_PATH = os.path.join(CWD, 'assets', 'Firetruck')
+TRAINS = os.listdir(TRAIN_PATH)
+TRAIN_SPRITES = [os.path.join(TRAIN_PATH, train) for train in TRAINS]
+
+ASPHALT_PATH = os.path.join(CWD, 'assets', 'Asphalt')
+ASPHALTS = os.listdir(ASPHALT_PATH)
+ASPHALT_SPRITES = [os.path.join(ASPHALT_PATH, asphalt) for asphalt in ASPHALTS]
+

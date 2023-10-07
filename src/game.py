@@ -1,11 +1,11 @@
 import pygame
 import random
 import sys
-from src.states.player.player import Player
-from src.states.coin.coin import Coin
-from src.states.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, NUM_COINS
-from src.states.base_entity import BaseEntity
+from src.entities.player.player import Player
+from src.entities.coin.coin import Coin
+from src.entities.train.train import Train
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES
+from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
 
@@ -51,8 +51,7 @@ class Game:
     def draw_lanes(self):
         # Load and scale the asphalt sprite
         original_asphalt = [pygame.image.load(path)
-                            for path in ['assets/Asphalt/Asphalt1.png', 'assets/Asphalt/Asphalt2.png',
-                                         'assets/Asphalt/Asphalt3.png', 'assets/Asphalt/Asphalt4.png']]
+                            for path in ASPHALT_SPRITES]
         scaled_asphalt = [pygame.transform.scale(img, (100, img.get_height())) for img in original_asphalt]
         
         # Randomize the asphalt sprite for each lane
@@ -67,8 +66,9 @@ class Game:
         current_time = pygame.time.get_ticks()
         if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
             lane = random.choice(self.lane_positions)
-
-            for i in range(NUM_COINS):
+            
+            num_coins = random.randint(3, 10)
+            for i in range(num_coins):
                 coin = Coin(self, lane)
                 coin.rect.y += i * coin.rect.height + i * COIN_GAP
 
@@ -81,8 +81,9 @@ class Game:
         if current_time - self.last_train_spawn_time > self.train_spawn_interval:
             occupied_lanes = [train.lane for train in self.trains]
             available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
-
+            
             idle_lane = random.choice(available_lanes)
+            available_lanes.remove(idle_lane)
             moving_lane = random.choice(available_lanes)
 
             if available_lanes:
@@ -143,6 +144,9 @@ class Game:
 
             self.spawn_coins()
             self.spawn_trains()
+
+            # Update scroll speed depending on distance travelled
+            self.scroll_speed = SCROLL_SPEED + self.player.distance // 10000
 
             pygame.display.flip()
 
