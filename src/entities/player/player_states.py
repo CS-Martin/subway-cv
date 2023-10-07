@@ -1,4 +1,5 @@
 from src.entities.base_state import BaseState
+
 import pygame
 import logging 
 
@@ -7,6 +8,8 @@ logger = logging.getLogger(__name__)
 class RunState(BaseState):
     def handle_event(self, player, event):
         logger.info('Player in RunState')
+        
+        
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -95,6 +98,7 @@ class CrashedState(BaseState):
 
     def update(self, player):
         logger.info('Player in CrashedState update')
+        player.game.game_sound.stop()
         player.game.game_over = True
 
     def draw(self, player, screen):
