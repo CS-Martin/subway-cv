@@ -59,7 +59,6 @@ class Game:
 
         for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
             for j, lane in enumerate(self.lane_positions):
-                logger.debug('Drawing lane {} at position {}'.format(j, lane))
                 self.screen.blit(self.asphalt[j], (lane, i * self.asphalt[j].get_height()))
                 
     def spawn_coins(self):
