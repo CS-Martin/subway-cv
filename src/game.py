@@ -8,7 +8,7 @@ from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WID
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
-
+from src.utilities.constants import GAME_SFX
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,6 +33,10 @@ class Game:
         self.lane_positions = LANE_POSITIONS
         self.scroll_speed = SCROLL_SPEED
         self.game_over = False
+        
+        # Start game music
+        self.game_sound = pygame.mixer.Sound(GAME_SFX)
+        self.game_sound.play()
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}

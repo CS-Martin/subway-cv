@@ -16,27 +16,26 @@ START_Y = -1 * max(TRAIN_HEIGHTS)
 SCROLL_SPEED = 4
 COIN_GAP = 20
 NUM_COINS = 3
+GAME_SFX = os.path.join(os.getcwd(), 'assets', 'game-sfx.wav')
 
 CWD = os.getcwd()
 
-PLAYER_PATH = os.path.join(CWD, 'assets', 'Player')
+PLAYER_PATH = os.path.join(CWD, 'assets', 'player')
 PLAYERS = os.listdir(PLAYER_PATH)
 PLAYER_SPRITES = [os.path.join(PLAYER_PATH, player) for player in PLAYERS]
 
-COIN_PATH = os.path.join(CWD, 'assets', 'Coin')
+COIN_PATH = os.path.join(CWD, 'assets', 'coin')
 COINS = os.listdir(COIN_PATH)
-# COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS]
-COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS if os.path.isfile(os.path.join(COIN_PATH, coin))]
-
-COIN_COLLISION_SOUND = os.path.join(CWD, 'assets', 'Coin', 'Sound', 'coin-collision-sound.wav')
+COIN_SPRITES = [os.path.join(COIN_PATH, coin) for coin in COINS if os.path.isfile(os.path.join(COIN_PATH, coin))] # filtering out any nonfile items (e.g., coin subdirectories).
+COIN_COLLISION_SFX = os.path.join(CWD, 'assets', 'coin', 'coin-sfx', 'coin-collision-sound.wav')
 
 
-TRAIN_PATH = os.path.join(CWD, 'assets', 'Firetruck')
+TRAIN_PATH = os.path.join(CWD, 'assets', 'firetruck')
 TRAINS = os.listdir(TRAIN_PATH)
 TRAIN_SPRITES = [os.path.join(TRAIN_PATH, train) for train in TRAINS]
 
 
-ASPHALT_PATH = os.path.join(CWD, 'assets', 'Asphalt')
+ASPHALT_PATH = os.path.join(CWD, 'assets', 'asphalt')
 ASPHALTS = os.listdir(ASPHALT_PATH)
 ASPHALT_SPRITES = [os.path.join(ASPHALT_PATH, asphalt) for asphalt in ASPHALTS]
 
