@@ -1,5 +1,7 @@
 # subway-cv
 
+Subway-CV is an innovative endless runner game where players navigate lanes, dodge obstacles, and collect coins. Unlike traditional games, Subway CV Runner harnesses the power of computer vision, allowing players to control their in-game character using real-time physical movements captured by a camera. Dive into this immersive experience where your body's motions translate directly into the game, merging the realms of physical activity and digital gameplay.
+
 ## TO DO
 - [x] Establish positioning per lane
 - [x] Limit player movement 
