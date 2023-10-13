@@ -17,12 +17,11 @@ class Game:
     def __init__(self):
         # Initialize Pygame
         pygame.init()
-
         # Set up the game window
         self.screen_width, self.screen_height = WIDTH, HEIGHT
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Subway Surfers")
-
+        
         # Game properties
         self.clock = pygame.time.Clock()    
         self.num_lanes = NUM_LANES
@@ -61,10 +60,19 @@ class Game:
         # Randomize the asphalt sprite for each lane
         self.asphalt = [random.choice(scaled_asphalt) for _ in range(self.num_lanes)]
 
+        dash_length = 30  # Adjust as needed for the length of the dashes
+        dash_gap = 60  # Space between dashes
+        dash_y_start = -dash_length  # Start drawing from slightly above the screen to make it seamless
+
         for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
             for j, lane in enumerate(self.lane_positions):
                 self.screen.blit(self.asphalt[j], (lane, i * self.asphalt[j].get_height()))
-                
+
+                # Drawing white dashed lines in the center of the lane
+                lane_center = lane + self.lane_width // 2
+                for y in range(dash_y_start, self.screen_height + dash_length, dash_length + dash_gap):
+                    pygame.draw.line(self.screen, (255, 255, 255), (lane_center, y), (lane_center, y + dash_length), 4)  # 2 is the width of the line
+
     def spawn_coins(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_coin_spawn_time > self.coin_spawn_interval:
@@ -128,7 +136,7 @@ class Game:
 
     def draw_entities(self):
         # Draw entities
-        self.screen.fill((255, 255, 255))  # Clear the screen
+        self.screen.fill((26, 186, 86))  # Clear the screen
         self.draw_lanes()  # Draw lanes
         self.player.draw(self.screen)
 
