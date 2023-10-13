@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, SIDEWALK_PATH
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -50,28 +50,43 @@ class Game:
         self.last_train_spawn_time = pygame.time.get_ticks()
         self.train_spawn_interval = 10000  # 10 seconds
 
-
     def draw_lanes(self):
         # Load and scale the asphalt sprite
         original_asphalt = [pygame.image.load(path)
                             for path in ASPHALT_SPRITES]
         scaled_asphalt = [pygame.transform.scale(img, (100, img.get_height())) for img in original_asphalt]
         
+        
+        sidewalk_sprite = pygame.image.load(SIDEWALK_PATH)
+        scaled_sidewalk = pygame.transform.scale(sidewalk_sprite, (50, sidewalk_sprite.get_height()))
+
+        
         # Randomize the asphalt sprite for each lane
         self.asphalt = [random.choice(scaled_asphalt) for _ in range(self.num_lanes)]
 
-        dash_length = 30  # Adjust as needed for the length of the dashes
-        dash_gap = 60  # Space between dashes
+        dash_length = 40  # Adjust as needed for the length of the dashes
+        dash_gap = 70  # Space between dashes
         dash_y_start = -dash_length  # Start drawing from slightly above the screen to make it seamless
 
         for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
+            # Draw sidewalks on the leftmost and rightmost part of the screen
+            self.screen.blit(scaled_sidewalk, (399, i * scaled_sidewalk.get_height()))  # left sidewalk
+            self.screen.blit(scaled_sidewalk, (self.screen_width - 450, i * scaled_sidewalk.get_height()))  # right sidewalk
+            
             for j, lane in enumerate(self.lane_positions):
                 self.screen.blit(self.asphalt[j], (lane, i * self.asphalt[j].get_height()))
 
                 # Drawing white dashed lines in the center of the lane
                 lane_center = lane + self.lane_width // 2
                 for y in range(dash_y_start, self.screen_height + dash_length, dash_length + dash_gap):
-                    pygame.draw.line(self.screen, (255, 255, 255), (lane_center, y), (lane_center, y + dash_length), 4)  # 2 is the width of the line
+                    pygame.draw.line(self.screen, (255, 255, 255), (lane_center, y), (lane_center, y + dash_length), 4)  # 4 is the width of the line
+                
+                # Drawing white borders for leftmost and rightmost lanes
+                if j == 0:  # Leftmost lane
+                    pygame.draw.line(self.screen, (255, 255, 255), (lane + self.lane_width, 0), (lane + self.lane_width, self.screen_height), 4)
+
+                elif j == len(self.lane_positions) - 1:  # Rightmost lane
+                    pygame.draw.line(self.screen, (255, 255, 255), (lane, 0), (lane, self.screen_height), 4)
 
     def spawn_coins(self):
         current_time = pygame.time.get_ticks()
