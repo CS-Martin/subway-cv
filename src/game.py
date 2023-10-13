@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, SIDEWALK_PATH
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -54,15 +54,18 @@ class Game:
         # Load and scale the asphalt sprite
         original_asphalt = [pygame.image.load(path)
                             for path in ASPHALT_SPRITES]
-        scaled_asphalt = [pygame.transform.scale(img, (100, img.get_height())) for img in original_asphalt]
+        original_sidewalk = [pygame.image.load(path)
+                            for path in SIDEWALK_SPRITES]
+        scaled_sidewalk = [pygame.transform.scale(img, (SIDEWALK_SCALE, img.get_height())) for img in original_sidewalk]
+        scaled_asphalt = [pygame.transform.scale(img, (ASPHALT_SCALE, img.get_height())) for img in original_asphalt]
         
+        left_lane_edge = pygame.image.load(LEFT_LANE_EDGE_PATH)
+        scaled_left_lane_edge = pygame.transform.scale(left_lane_edge, (LANE_EDGE_SCALE, left_lane_edge.get_height()))
+        scaled_right_lane_edge = pygame.transform.flip(scaled_left_lane_edge, True, False)
         
-        sidewalk_sprite = pygame.image.load(SIDEWALK_PATH)
-        scaled_sidewalk = pygame.transform.scale(sidewalk_sprite, (50, sidewalk_sprite.get_height()))
-
-        
-        # Randomize the asphalt sprite for each lane
+        # Randomize the asphalt sprite and sidewalk
         self.asphalt = [random.choice(scaled_asphalt) for _ in range(self.num_lanes)]
+        self.sidewalk = [random.choice(scaled_sidewalk) for _ in range(self.num_lanes)]
 
         dash_length = 40  # Adjust as needed for the length of the dashes
         dash_gap = 70  # Space between dashes
@@ -70,10 +73,15 @@ class Game:
 
         for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
             # Draw sidewalks on the leftmost and rightmost part of the screen
-            self.screen.blit(scaled_sidewalk, (399, i * scaled_sidewalk.get_height()))  # left sidewalk
-            self.screen.blit(scaled_sidewalk, (self.screen_width - 450, i * scaled_sidewalk.get_height()))  # right sidewalk
+            self.screen.blit(scaled_left_lane_edge, (430, i * scaled_left_lane_edge.get_height()))  # left sidewalk
+            self.screen.blit(scaled_right_lane_edge, (self.screen_width - 530, i * scaled_right_lane_edge.get_height()))  # right sidewalk
             
             for j, lane in enumerate(self.lane_positions):
+                # Generate sidewalk
+                self.screen.blit(self.sidewalk[j], (365, i * self.sidewalk[j].get_height()))  # left sidewalk
+                self.screen.blit(self.sidewalk[j], (self.screen_width - 430, i * self.sidewalk[j].get_height()))  # right sidewalk
+                
+                # Generate asphalt
                 self.screen.blit(self.asphalt[j], (lane, i * self.asphalt[j].get_height()))
 
                 # Drawing white dashed lines in the center of the lane

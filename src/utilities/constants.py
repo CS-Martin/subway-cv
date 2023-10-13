@@ -38,6 +38,12 @@ TRAIN_SPRITES = [os.path.join(TRAIN_PATH, train) for train in TRAINS]
 ASPHALT_PATH = os.path.join(CWD, 'assets', 'asphalt')
 ASPHALTS = os.listdir(ASPHALT_PATH)
 ASPHALT_SPRITES = [os.path.join(ASPHALT_PATH, asphalt) for asphalt in ASPHALTS]
+ASPHALT_SCALE = 100
 
-SIDEWALK_PATH = os.path.join(CWD, 'assets', 'sidewalk', 'sidewalk.png')
+LEFT_LANE_EDGE_PATH = os.path.join(CWD, 'assets', 'lane_edge', 'left-lane-edge.png')
+LANE_EDGE_SCALE = 100
 
+SIDEWALK_PATH = os.path.join(CWD, 'assets', 'sidewalk')
+SIDEWALK = os.listdir(SIDEWALK_PATH)
+SIDEWALK_SPRITES = [os.path.join(SIDEWALK_PATH, sidewalk) for sidewalk in SIDEWALK]
+SIDEWALK_SCALE = 70
