@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -46,9 +46,6 @@ class Game:
         # Spawn timers
         self.last_coin_spawn_time = pygame.time.get_ticks()
         self.coin_spawn_interval = 3000  # 3 seconds 
-
-        self.last_train_spawn_time = pygame.time.get_ticks()
-        self.train_spawn_interval = 10000  # 10 seconds
 
     def draw_lanes(self):
         # Load and scale sprites
@@ -116,22 +113,24 @@ class Game:
             self.last_coin_spawn_time = current_time
 
     def spawn_trains(self):
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_train_spawn_time > self.train_spawn_interval:
-            occupied_lanes = [train.lane for train in self.trains]
-            available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
-            
-            idle_lane = random.choice(available_lanes)
-            available_lanes.remove(idle_lane)
-            moving_lane = random.choice(available_lanes)
+        occupied_lanes = [train.lane for train in self.trains]
+        available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
 
-            if available_lanes:
-                train1 = Train(self, idle_lane, is_moving=False)
-                train2 = Train(self, moving_lane, is_moving=True)
-                self.trains.add(train1)
-                self.trains.add(train2)
+        # Spawn a train
+        if available_lanes:
+            lane = random.choice(available_lanes)
+            is_moving = random.choice([True, False])
+            train = Train(self, lane, is_moving=is_moving)
 
-            self.last_train_spawn_time = current_time
+            if is_moving:
+                train.rect.y -= train.rect.height + TRAIN_GAP
+            else:
+                if train.height < 500:
+                    train.rect.y -= train.rect.height // 2 + TRAIN_GAP
+                else:
+                    train.rect.y -= train.rect.height // 4 + TRAIN_GAP
+
+            self.trains.add(train)
 
     def display_game_over_screen(self):
         print("Game Over! Press ESC to exit.")
@@ -186,7 +185,7 @@ class Game:
 
             # Update scroll speed depending on distance travelled
             self.scroll_speed = SCROLL_SPEED + self.player.distance // 10000
-
+            
             pygame.display.flip()
 
             self.clock.tick(DESIRED_FPS)
