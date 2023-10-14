@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -47,10 +47,6 @@ class Game:
         self.last_coin_spawn_time = pygame.time.get_ticks()
         self.coin_spawn_interval = 3000  # 3 seconds 
 
-        self.last_train_spawn_time = pygame.time.get_ticks()
-        self.train_spawn_interval = 10000  # 10 seconds
-
-
     def draw_lanes(self):
         # Load and scale the asphalt sprite
         original_asphalt = [pygame.image.load(path)
@@ -88,20 +84,24 @@ class Game:
             self.last_coin_spawn_time = current_time
 
     def spawn_trains(self):
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_train_spawn_time > self.train_spawn_interval:
-            occupied_lanes = [train.lane for train in self.trains]
-            available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
+        occupied_lanes = [train.lane for train in self.trains]
+        available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
 
+        # Spawn a train
+        if available_lanes:
+            lane = random.choice(available_lanes)
+            is_moving = random.choice([True, False])
+            train = Train(self, lane, is_moving=is_moving)
 
-            for index, lane in enumerate(available_lanes):
-                is_moving = random.choice([True, False])
-                train = Train(self, lane, is_moving=is_moving)
-                self.trains.add(train)
-                if index == 2:
-                    break
+            if is_moving:
+                train.rect.y -= train.rect.height + TRAIN_GAP
+            else:
+                if train.height < 500:
+                    train.rect.y -= train.rect.height // 2 + TRAIN_GAP
+                else:
+                    train.rect.y -= train.rect.height // 4 + TRAIN_GAP
 
-            self.last_train_spawn_time = current_time
+            self.trains.add(train)
 
     def display_game_over_screen(self):
         print("Game Over! Press ESC to exit.")
@@ -156,6 +156,9 @@ class Game:
 
             # Update scroll speed depending on distance travelled
             self.scroll_speed = SCROLL_SPEED + self.player.distance // 10000
+
+            # Update train spawn interval depending on scroll speed
+            self.train_spawn_interval = 10000 - (self.scroll_speed - SCROLL_SPEED) * 1000
 
             pygame.display.flip()
 
