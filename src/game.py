@@ -92,16 +92,14 @@ class Game:
         if current_time - self.last_train_spawn_time > self.train_spawn_interval:
             occupied_lanes = [train.lane for train in self.trains]
             available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
-            
-            idle_lane = random.choice(available_lanes)
-            available_lanes.remove(idle_lane)
-            moving_lane = random.choice(available_lanes)
 
-            if available_lanes:
-                train1 = Train(self, idle_lane, is_moving=False)
-                train2 = Train(self, moving_lane, is_moving=True)
-                self.trains.add(train1)
-                self.trains.add(train2)
+
+            for index, lane in enumerate(available_lanes):
+                is_moving = random.choice([True, False])
+                train = Train(self, lane, is_moving=is_moving)
+                self.trains.add(train)
+                if index == 2:
+                    break
 
             self.last_train_spawn_time = current_time
 
