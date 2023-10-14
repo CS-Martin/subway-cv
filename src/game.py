@@ -156,10 +156,7 @@ class Game:
 
             # Update scroll speed depending on distance travelled
             self.scroll_speed = SCROLL_SPEED + self.player.distance // 10000
-
-            # Update train spawn interval depending on scroll speed
-            self.train_spawn_interval = 10000 - (self.scroll_speed - SCROLL_SPEED) * 1000
-
+            
             pygame.display.flip()
 
             self.clock.tick(DESIRED_FPS)
