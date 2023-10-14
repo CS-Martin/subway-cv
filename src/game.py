@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -51,7 +51,7 @@ class Game:
         self.train_spawn_interval = 10000  # 10 seconds
 
     def draw_lanes(self):
-        # Load and scale the asphalt sprite
+        # Load and scale sprites
         original_asphalt = [pygame.image.load(path)
                             for path in ASPHALT_SPRITES]
         original_sidewalk = [pygame.image.load(path)
@@ -63,6 +63,9 @@ class Game:
         scaled_left_lane_edge = pygame.transform.scale(left_lane_edge, (LANE_EDGE_SCALE, left_lane_edge.get_height()))
         scaled_right_lane_edge = pygame.transform.flip(scaled_left_lane_edge, True, False)
         
+        sidewalk_to_grass = pygame.image.load(SIDEWALK_TO_GRASS_SPRITE)
+        scaled_sidewalk_to_grass = pygame.transform.scale(sidewalk_to_grass, (SIDEWALK_TO_GRASS_SCALE, sidewalk_to_grass.get_height()))
+
         # Randomize the asphalt sprite and sidewalk
         self.asphalt = [random.choice(scaled_asphalt) for _ in range(self.num_lanes)]
         self.sidewalk = [random.choice(scaled_sidewalk) for _ in range(self.num_lanes)]
@@ -72,9 +75,11 @@ class Game:
         dash_y_start = -dash_length  # Start drawing from slightly above the screen to make it seamless
 
         for i in range(int(self.screen_height / self.asphalt[0].get_height()) + 1):
+            self.screen.blit(scaled_sidewalk_to_grass, (295, i * scaled_sidewalk_to_grass.get_height())) 
             # Draw sidewalks on the leftmost and rightmost part of the screen
             self.screen.blit(scaled_left_lane_edge, (430, i * scaled_left_lane_edge.get_height()))  # left sidewalk
             self.screen.blit(scaled_right_lane_edge, (self.screen_width - 530, i * scaled_right_lane_edge.get_height()))  # right sidewalk
+            
             
             for j, lane in enumerate(self.lane_positions):
                 # Generate sidewalk

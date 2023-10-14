@@ -47,3 +47,6 @@ SIDEWALK_PATH = os.path.join(CWD, 'assets', 'sidewalk')
 SIDEWALK = os.listdir(SIDEWALK_PATH)
 SIDEWALK_SPRITES = [os.path.join(SIDEWALK_PATH, sidewalk) for sidewalk in SIDEWALK]
 SIDEWALK_SCALE = 70
+
+SIDEWALK_TO_GRASS_SPRITE = os.path.join(CWD, 'assets', 'grass', 'sidewalk-to-grass.png')
+SIDEWALK_TO_GRASS_SCALE = 70
