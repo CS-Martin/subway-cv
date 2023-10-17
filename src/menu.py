@@ -1,7 +1,7 @@
 import pygame
 import sys
 from src.utilities.buttons import Button
-from src.utilities.constants import MENU_FONT_COLOR, MENU_FONT_SIZE
+from src.utilities.constants import MENU_FONT_COLOR, MENU_FONT_SIZE, MENU_BG_COLOR, WIDTH, HEIGHT, SCROLL_SPEED
 
 class Menu:
     def __init__(self, game):
@@ -13,11 +13,12 @@ class Menu:
         ]
 
     def retry_game(self):
+        self.game.reset()
         self.game.run()  # Call the game's run method to restart the game
 
     def show_leaderboards(self):
         pass  # Implement this to show leaderboards
-
+        
     def quit_game(self):
         pygame.quit()
         sys.exit()
@@ -36,7 +37,8 @@ class Menu:
                     button.is_hovered = button.rect.collidepoint(event.pos)
 
     def draw(self):
-        self.game.screen.fill((26, 186, 86))  # Use the game's screen to draw
+        s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        s.fill(MENU_BG_COLOR)
 
         # Display "GAME OVER"
         font = pygame.font.Font(None, MENU_FONT_SIZE)

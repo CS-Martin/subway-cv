@@ -33,10 +33,7 @@ class Game:
         self.lane_positions = LANE_POSITIONS
         self.scroll_speed = SCROLL_SPEED
         self.game_over = False
-        
-        # Start game music
         self.game_sound = pygame.mixer.Sound(GAME_SFX)
-        self.game_sound.play()
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
@@ -185,10 +182,20 @@ class Game:
         for train in self.trains.sprites():
             train.draw(self.screen)
         
+    def reset(self):
+        # Reset properties to their initial values
+        self.game_over = False
+        self.player = Player(self, self.lane_positions[1])
+        self.coins = Group()
+        self.trains = Group()
+        self.last_coin_spawn_time = pygame.time.get_ticks()
+        self.scroll_speed = SCROLL_SPEED
+        
     def start_overlay(self):
         font = pygame.font.Font(None, MENU_FONT_SIZE)
         
         menu_isActive = True
+        self.game_sound.play()
         while menu_isActive:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -199,10 +206,11 @@ class Game:
                         menu_isActive = False
                     
             # Draw the lanes and entities
-            self.screen.fill((26, 186, 86))  # Clear the screen
             self.handle_events()
             self.update_entities()
             self.draw_entities()
+            
+            # Start music
 
             # Draw the semi-transparent menu background
             s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -216,8 +224,11 @@ class Game:
             
             pygame.display.flip()
         
+        self.game_sound.stop()
+        
     def run(self):
         self.start_overlay()
+        self.game_sound.play()
         # Game loop
         while not self.game_over:
             self.handle_events()
