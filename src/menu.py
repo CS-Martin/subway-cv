@@ -1,5 +1,6 @@
 import pygame
 import sys
+import csv
 from src.utilities.buttons import Button
 from src.utilities.constants import MENU_FONT_COLOR, MENU_FONT_SIZE, MENU_BG_COLOR, WIDTH, HEIGHT
 
@@ -20,11 +21,6 @@ class Menu:
         self.active = False
         self.submit_button = Button(350, 270, "Submit", self.submit_name)
         
-        
-    def submit_name(self):
-        print(f"Name: {self.text}, Score: {self.game.player.score}")
-        self.text = ''
-    
     def retry_game(self):
         self.game.reset()
         self.game.run()  # Call the game's run method to restart the game
@@ -32,9 +28,32 @@ class Menu:
     def show_leaderboards(self):
         pass  # Implement this to show leaderboards
         
-    def quit_game(self):
-        pygame.quit()
-        sys.exit()
+        
+    def save_score_to_csv(self, name, score):
+        with open('leaderboards.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([name, score])
+            
+    def submit_name(self):
+        print(f"Name: {self.text}, Score: {self.game.player.score}")
+        self.save_score_to_csv(self.text, self.game.player.score)
+        self.text = ''
+        
+    def save_score_to_csv(self, name, score):
+        filename = 'leaderboards.csv'
+        
+        try:
+            with open(filename, 'r'):
+                pass
+        except FileNotFoundError:
+            with open(filename, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Name', 'Score'])
+                
+        # Append the new score
+        with open(filename, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([name, score])
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -68,9 +87,7 @@ class Menu:
                 for button in self.buttons:
                     button.is_hovered = button.rect.collidepoint(event.pos)
 
-            self.draw()  # Draw after handling events to reflect updates immediately
-
-            
+            self.draw()  # Draw after handling events to reflect updates immediately b
 
     def name_input_box(self):
         # Clear the previous text by drawing a rectangle over it.
@@ -109,9 +126,12 @@ class Menu:
             button.draw(self.game.screen)
             button.rect.centerx = WIDTH/2
             
-
     def run(self):
         while True:
             self.draw()
             self.handle_events()
             pygame.display.flip()
+
+    def quit_game(self):
+        pygame.quit()
+        sys.exit()
