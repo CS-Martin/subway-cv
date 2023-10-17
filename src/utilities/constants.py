@@ -19,6 +19,13 @@ COIN_GAP = 20
 NUM_COINS = 3
 GAME_SFX = os.path.join(os.getcwd(), 'assets', 'game-sfx.wav')
 
+MENU_FONT_COLOR = (255, 255, 255)
+MENU_BG_COLOR = (0, 0, 0, 127)
+MENU_FONT_SIZE = 32
+
+SCORE_FONT_SIZE = 36
+SCORE_FONT_COLOR = (255, 255, 255)
+
 CWD = os.getcwd()
 
 PLAYER_PATH = os.path.join(CWD, 'assets', 'player')
