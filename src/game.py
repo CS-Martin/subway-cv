@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+from src.menu import Menu
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
@@ -32,10 +33,7 @@ class Game:
         self.lane_positions = LANE_POSITIONS
         self.scroll_speed = SCROLL_SPEED
         self.game_over = False
-        
-        # Start game music
         self.game_sound = pygame.mixer.Sound(GAME_SFX)
-        self.game_sound.play()
 
         # Create entities
         self.entity_classes = {"Player": Player, "Coin": Coin, "Train": Train}
@@ -133,17 +131,28 @@ class Game:
             self.trains.add(train)
 
     def display_game_over_screen(self):
-        print("Game Over! Press ESC to exit.")
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+        menu = Menu(self)
+        menu.run()
 
-                if event.type==pygame.KEYDOWN:
-                    if event.key==pygame.K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
+    def draw(self):
+        self.screen.fill((0, 0, 0))  # Black background
+
+        # Draw GAME OVER text
+        font = pygame.font.Font(None, 74)
+        text_surface = font.render("GAME OVER", True, (255, 255, 255))
+        self.screen.blit(text_surface, (150, 50))
+
+        # Draw Score
+        font = pygame.font.Font(None, 36)
+        score_text = "Score: " + str(self.score)
+        text_surface = font.render(score_text, True, (255, 255, 255))
+        self.screen.blit(text_surface, (250, 130))
+
+        # Draw Buttons
+        for button_text, button_data in self.buttons.items():
+            pygame.draw.rect(self.screen, (255, 255, 255), button_data["rect"])
+            text_surface = font.render(button_text, True, (0, 0, 0))
+            self.screen.blit(text_surface, (button_data["rect"].x + 10, button_data["rect"].y + 10))
 
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
@@ -173,10 +182,20 @@ class Game:
         for train in self.trains.sprites():
             train.draw(self.screen)
         
-    def display_main_menu(self):
+    def reset(self):
+        # Reset properties to their initial values
+        self.game_over = False
+        self.player = Player(self, self.lane_positions[1])
+        self.coins = Group()
+        self.trains = Group()
+        self.last_coin_spawn_time = pygame.time.get_ticks()
+        self.scroll_speed = SCROLL_SPEED
+        
+    def start_overlay(self):
         font = pygame.font.Font(None, MENU_FONT_SIZE)
         
         menu_isActive = True
+        self.game_sound.play()
         while menu_isActive:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -187,10 +206,11 @@ class Game:
                         menu_isActive = False
                     
             # Draw the lanes and entities
-            self.screen.fill((26, 186, 86))  # Clear the screen
             self.handle_events()
             self.update_entities()
             self.draw_entities()
+            
+            # Start music
 
             # Draw the semi-transparent menu background
             s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -203,9 +223,12 @@ class Game:
             self.screen.blit(label, label_rect)
             
             pygame.display.flip()
-            
+        
+        self.game_sound.stop()
+        
     def run(self):
-        self.display_main_menu()
+        self.start_overlay()
+        self.game_sound.play()
         # Game loop
         while not self.game_over:
             self.handle_events()
