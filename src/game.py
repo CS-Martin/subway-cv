@@ -131,17 +131,14 @@ class Game:
             self.trains.add(train)
 
     def display_game_over_screen(self):
+        s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        s.fill(MENU_BG_COLOR)
+        self.screen.blit(s, (0, 0))
+        
         menu = Menu(self)
         menu.run()
 
     def draw(self):
-        self.screen.fill((0, 0, 0))  # Black background
-
-        # Draw GAME OVER text
-        font = pygame.font.Font(None, 74)
-        text_surface = font.render("GAME OVER", True, (255, 255, 255))
-        self.screen.blit(text_surface, (150, 50))
-
         # Draw Score
         font = pygame.font.Font(None, 36)
         score_text = "Score: " + str(self.score)
@@ -181,9 +178,9 @@ class Game:
 
         for train in self.trains.sprites():
             train.draw(self.screen)
-        
+    
+    # A function to reset the game so player can retry after game over
     def reset(self):
-        # Reset properties to their initial values
         self.game_over = False
         self.player = Player(self, self.lane_positions[1])
         self.coins = Group()
@@ -209,8 +206,6 @@ class Game:
             self.handle_events()
             self.update_entities()
             self.draw_entities()
-            
-            # Start music
 
             # Draw the semi-transparent menu background
             s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
