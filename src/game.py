@@ -4,7 +4,7 @@ import sys
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE, MENU_BG_COLOR, MENU_FONT_COLOR, MENU_FONT_SIZE
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -46,7 +46,7 @@ class Game:
         # Spawn timers
         self.last_coin_spawn_time = pygame.time.get_ticks()
         self.coin_spawn_interval = 3000  # 3 seconds 
-
+        
     def draw_lanes(self):
         # Load and scale sprites
         original_asphalt = [pygame.image.load(path)
@@ -172,13 +172,46 @@ class Game:
 
         for train in self.trains.sprites():
             train.draw(self.screen)
+        
+    def display_main_menu(self):
+        font = pygame.font.Font(None, MENU_FONT_SIZE)
+        
+        menu_isActive = True
+        while menu_isActive:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        menu_isActive = False
+                    
+            # Draw the lanes and entities
+            self.screen.fill((26, 186, 86))  # Clear the screen
+            self.handle_events()
+            self.update_entities()
+            self.draw_entities()
 
+            # Draw the semi-transparent menu background
+            s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+            s.fill(MENU_BG_COLOR)
+            self.screen.blit(s, (0, 0))
+            
+            label = font.render("Press SPACE to start", True, MENU_FONT_COLOR)
+            label_rect = label.get_rect()
+            label_rect.center = self.screen.get_rect().center
+            self.screen.blit(label, label_rect)
+            
+            pygame.display.flip()
+            
     def run(self):
+        self.display_main_menu()
         # Game loop
         while not self.game_over:
             self.handle_events()
             self.update_entities()
             self.draw_entities()
+            Coin.draw_score(self)
 
             self.spawn_coins()
             self.spawn_trains()
