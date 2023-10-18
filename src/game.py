@@ -5,7 +5,7 @@ from src.menu import Menu
 from src.entities.player.player import Player
 from src.entities.coin.coin import Coin
 from src.entities.train.train import Train
-from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE, MENU_BG_COLOR, MENU_FONT_COLOR, MENU_FONT_SIZE
+from src.utilities.constants import WIDTH, HEIGHT, NUM_LANES, LANE_GAP, LANE_WIDTH, TOTAL_WIDTH, DESIRED_FPS, START_X, LANE_POSITIONS, SCROLL_SPEED, COIN_GAP, ASPHALT_SPRITES, TRAIN_GAP, ASPHALT_SCALE, LEFT_LANE_EDGE_PATH, SIDEWALK_SPRITES, SIDEWALK_SCALE, LANE_EDGE_SCALE, SIDEWALK_TO_GRASS_SPRITE, SIDEWALK_TO_GRASS_SCALE, FONT
 from src.entities.base_entity import BaseEntity
 import random
 from pygame.sprite import Group, GroupSingle
@@ -131,25 +131,8 @@ class Game:
             self.last_train_spawn_time = current_time
 
     def display_game_over_screen(self):
-        # s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        # s.fill(MENU_BG_COLOR)
-        # self.screen.blit(s, (0, 0))
-        
         menu = Menu(self)
         menu.run()
-
-    def draw(self):
-        # Draw Score
-        font = pygame.font.Font(None, 36)
-        score_text = "Score: " + str(self.score)
-        text_surface = font.render(score_text, True, (255, 255, 255))
-        self.screen.blit(text_surface, (250, 130))
-
-        # # Draw Buttons
-        # for button_text, button_data in self.buttons.items():
-        #     pygame.draw.rect(self.screen, (255, 255, 255), button_data["rect"])
-        #     text_surface = font.render(button_text, True, (0, 0, 0))
-        #     self.screen.blit(text_surface, (button_data["rect"].x + 10, button_data["rect"].y + 10))
 
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
@@ -189,7 +172,7 @@ class Game:
         self.scroll_speed = SCROLL_SPEED
         
     def start_overlay(self):
-        font = pygame.font.Font(None, MENU_FONT_SIZE)
+        font = pygame.font.Font(FONT, 72)
         
         menu_isActive = True
         self.game_sound.play()
@@ -209,10 +192,10 @@ class Game:
 
             # Draw the semi-transparent menu background
             s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            s.fill(MENU_BG_COLOR)
+            s.fill((0, 0, 0, 120))
             self.screen.blit(s, (0, 0))
             
-            label = font.render("Press SPACE to start", True, MENU_FONT_COLOR)
+            label = font.render("Press SPACE to start", True, (255, 255, 255))
             label_rect = label.get_rect()
             label_rect.center = self.screen.get_rect().center
             self.screen.blit(label, label_rect)
