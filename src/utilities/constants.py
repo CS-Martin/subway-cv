@@ -20,7 +20,7 @@ NUM_COINS = 3
 GAME_SFX = os.path.join(os.getcwd(), 'assets', 'game-sfx.wav')
 
 MENU_FONT_COLOR = (255, 255, 255)
-MENU_BG_COLOR = (0, 0, 0, 127)
+MENU_BG_COLOR = (0, 0, 0, 150)
 MENU_FONT_SIZE = 72
 
 BUTTON_FONT_SIZE = 48

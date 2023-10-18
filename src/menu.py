@@ -1,18 +1,28 @@
 import pygame
 import sys
 import csv
+from src.leaderboards import Leaderboard
 from src.utilities.buttons import Button
 from src.utilities.constants import MENU_FONT_COLOR, MENU_FONT_SIZE, MENU_BG_COLOR, WIDTH, HEIGHT
 
+import logging
+logger = logging.getLogger(__name__)
 class Menu:
     def __init__(self, game):
+        # Blit the transparent dark surface onto the game screen
         self.game = game
+        self.clear_screen()
+        transparent_dark_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        transparent_dark_surface.fill((0,0,0,128))  # 50% transparent dark color
+        self.game.screen.blit(transparent_dark_surface, (0, 0))
+        
         self.buttons = [
-            Button(200, 200, "Retry", self.retry_game),
+            Button(WIDTH//2-10, 200, "Retry", self.retry_game),
             Button(200, 340, "Leaderboards", self.show_leaderboards),
             Button(200, 410, "Quit", self.quit_game)
         ]
-        self.input_box = pygame.Rect(200, 270, 140, 32)  # X, Y, Width, Height
+        
+        self.input_box = pygame.Rect(200, 270, 200, 32)  # X, Y, Width, Height
         self.color_inactive = pygame.Color('lightskyblue3')
         self.color_active = pygame.Color('dodgerblue2')
         self.color = self.color_inactive
@@ -21,14 +31,24 @@ class Menu:
         self.active = False
         self.submit_button = Button(350, 270, "Submit", self.submit_name)
         
+    def clear_screen(self):
+        self.game.screen.fill((0, 0, 0))
+        transparent_dark_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        transparent_dark_surface.fill((0, 0, 0, 128))  # 50% transparent dark color
+        self.game.screen.blit(transparent_dark_surface, (0, 0))
+        
     def retry_game(self):
         self.game.reset()
         self.game.run()  # Call the game's run method to restart the game
 
     def show_leaderboards(self):
-        pass  # Implement this to show leaderboards
+        leaderboard = Leaderboard(self.game)
+        leaderboard.run()
         
-        
+        self.clear_screen()
+        self.draw()
+        pygame.display.flip()
+    
     def save_score_to_csv(self, name, score):
         with open('leaderboards.csv', 'a', newline='') as file:
             writer = csv.writer(file)
@@ -87,7 +107,7 @@ class Menu:
                 for button in self.buttons:
                     button.is_hovered = button.rect.collidepoint(event.pos)
 
-            self.draw()  # Draw after handling events to reflect updates immediately b
+            self.draw()  # Draw after handling events to reflect asdupdates immediatel
 
     def name_input_box(self):
         # Clear the previous text by drawing a rectangle over it.
@@ -106,13 +126,14 @@ class Menu:
         # Draw submit button
         self.submit_button.draw(self.game.screen)
         
-    def draw(self):
+    def draw(self):      
         # Display "GAME OVER"
+
         font = pygame.font.Font(None, MENU_FONT_SIZE)
         game_over_label = font.render("GAME OVER", True, MENU_FONT_COLOR)
         game_over_rect = game_over_label.get_rect(center=(WIDTH/2, 100))
         self.game.screen.blit(game_over_label, game_over_rect)
-
+         
         # Display score
         score_text = "Score: " + str(self.game.player.score)
         score_label = font.render(score_text, True, MENU_FONT_COLOR)
@@ -123,13 +144,15 @@ class Menu:
         
         # Draw buttons
         for button in self.buttons:
-            button.draw(self.game.screen)
             button.rect.centerx = WIDTH/2
-            
+            button.draw(self.game.screen)
+             
     def run(self):
-        while True:
+        self.running = True
+        while self.running:
             self.draw()
             self.handle_events()
+            logger.debug("Menu running")
             pygame.display.flip()
 
     def quit_game(self):
