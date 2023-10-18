@@ -44,6 +44,8 @@ class Game:
         # Spawn timers
         self.last_coin_spawn_time = pygame.time.get_ticks()
         self.coin_spawn_interval = 3000  # 3 seconds 
+        self.last_train_spawn_time = pygame.time.get_ticks()
+        self.train_spawn_interval = 3000  # 5 seconds
         
     def draw_lanes(self):
         # Load and scale sprites
@@ -111,24 +113,22 @@ class Game:
             self.last_coin_spawn_time = current_time
 
     def spawn_trains(self):
-        occupied_lanes = [train.lane for train in self.trains]
-        available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_train_spawn_time > self.train_spawn_interval:
+            occupied_lanes = [train.lane for train in self.trains]
+            available_lanes = list(set(self.lane_positions) - set(occupied_lanes))
 
-        # Spawn a train
-        if available_lanes:
-            lane = random.choice(available_lanes)
-            is_moving = random.choice([True, False])
-            train = Train(self, lane, is_moving=is_moving)
+            for _ in range(len(available_lanes)):
+                lane = random.choice(available_lanes)
+                is_moving = random.choice([True, False])
+                train = Train(self, lane, is_moving=is_moving)
 
-            if is_moving:
-                train.rect.y -= train.rect.height + TRAIN_GAP
-            else:
-                if train.height < 500:
-                    train.rect.y -= train.rect.height // 2 + TRAIN_GAP
-                else:
-                    train.rect.y -= train.rect.height // 4 + TRAIN_GAP
+                if is_moving:
+                    train.rect.y -= train.rect.height * 1.25
 
-            self.trains.add(train)
+                self.trains.add(train)
+            
+            self.last_train_spawn_time = current_time
 
     def display_game_over_screen(self):
         # s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
