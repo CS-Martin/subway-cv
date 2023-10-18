@@ -131,9 +131,9 @@ class Game:
             self.trains.add(train)
 
     def display_game_over_screen(self):
-        s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        s.fill(MENU_BG_COLOR)
-        self.screen.blit(s, (0, 0))
+        # s = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        # s.fill(MENU_BG_COLOR)
+        # self.screen.blit(s, (0, 0))
         
         menu = Menu(self)
         menu.run()
@@ -145,11 +145,11 @@ class Game:
         text_surface = font.render(score_text, True, (255, 255, 255))
         self.screen.blit(text_surface, (250, 130))
 
-        # Draw Buttons
-        for button_text, button_data in self.buttons.items():
-            pygame.draw.rect(self.screen, (255, 255, 255), button_data["rect"])
-            text_surface = font.render(button_text, True, (0, 0, 0))
-            self.screen.blit(text_surface, (button_data["rect"].x + 10, button_data["rect"].y + 10))
+        # # Draw Buttons
+        # for button_text, button_data in self.buttons.items():
+        #     pygame.draw.rect(self.screen, (255, 255, 255), button_data["rect"])
+        #     text_surface = font.render(button_text, True, (0, 0, 0))
+        #     self.screen.blit(text_surface, (button_data["rect"].x + 10, button_data["rect"].y + 10))
 
     def get_entity_class(self, class_name):
         return self.entity_classes.get(class_name, BaseEntity)
@@ -169,7 +169,7 @@ class Game:
 
     def draw_entities(self):
         # Draw entities
-        self.screen.fill((26, 186, 86))  # Clear the screen
+        self.screen.fill((26, 186, 86))
         self.draw_lanes()  # Draw lanes
         self.player.draw(self.screen)
 
@@ -224,6 +224,7 @@ class Game:
     def run(self):
         self.start_overlay()
         self.game_sound.play()
+        
         # Game loop
         while not self.game_over:
             self.handle_events()
