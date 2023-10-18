@@ -19,18 +19,16 @@ COIN_GAP = 20
 NUM_COINS = 3
 GAME_SFX = os.path.join(os.getcwd(), 'assets', 'game-sfx.wav')
 
-MENU_FONT_COLOR = (255, 255, 255)
-MENU_BG_COLOR = (0, 0, 0, 150)
-MENU_FONT_SIZE = 72
+CWD = os.getcwd()
 
 BUTTON_FONT_SIZE = 48
 BUTTON_COLOR = (50, 168, 82)
 BUTTON_HOVER_COLOR = (70, 188, 102)
 
-SCORE_FONT_SIZE = 36
+SCORE_FONT_SIZE = 20
 SCORE_FONT_COLOR = (255, 255, 255)
+FONT = os.path.join(CWD, 'assets', 'font', 'm23.ttf')
 
-CWD = os.getcwd()
 
 PLAYER_PATH = os.path.join(CWD, 'assets', 'player')
 PLAYERS = os.listdir(PLAYER_PATH)
@@ -62,3 +60,9 @@ SIDEWALK_SCALE = 70
 
 SIDEWALK_TO_GRASS_SPRITE = os.path.join(CWD, 'assets', 'grass', 'sidewalk-to-grass.png')
 SIDEWALK_TO_GRASS_SCALE = 70
+
+MENU_PANEL_PATH = os.path.join(CWD, 'assets', 'UI', 'bg.png')
+RESTART_BUTTON_PATH = os.path.join(CWD, 'assets', 'UI', 'restart.png')
+LEADERBOARDS_BUTTON_PATH = os.path.join(CWD, 'assets', 'UI', 'leaderboards.png')
+QUIT_BUTTON_PATH = os.path.join(CWD, 'assets', 'UI', 'quit.png')
+SUBMIT_BUTTON_PATH = os.path.join(CWD, 'assets', 'UI', 'submit.png')
