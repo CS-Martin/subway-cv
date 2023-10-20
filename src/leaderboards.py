@@ -7,10 +7,6 @@ from src.utilities.constants import WIDTH, HEIGHT
 class Leaderboard:
     def __init__(self, game):
         self.game = game
-        self.clear_screen()
-        transparent_dark_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        transparent_dark_surface.fill((0, 0, 0, 128))  # 50% transparent dark color
-        self.game.screen.blit(transparent_dark_surface, (0, 0))
         self.back_button = Button(50, 50, "Back", self.back_to_menu)
         self.scores = self.get_sorted_scores()
         self.font = pygame.font.Font(None, 32)
@@ -38,23 +34,14 @@ class Leaderboard:
                 sys.exit()
 
             self.back_button.handle_event(event)
-
-    def clear_screen(self):
-        # Fill the screen with a background color to clear it
-        # self.game.screen.fill((0, 0, 0))
-        # If you want the transparent dark surface to appear on your leaderboard screen
-        transparent_dark_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        transparent_dark_surface.fill((0, 0, 0))  # 50% transparent dark color
-        self.game.screen.blit(transparent_dark_surface, (0, 0))
     
     def back_to_menu(self):
         # Exit the leaderboard loop
         self.running = False
-        self.game.screen.fill((0, 0, 0))
         pygame.display.flip()
 
     def draw(self):
-        self.clear_screen()
+        self.game.screen.fill((0, 0, 0, 120))
         # Starting position
         y_offset = 100
         
@@ -83,7 +70,6 @@ class Leaderboard:
     def run(self):
         self.running = True
         while self.running:
-            
             self.handle_events()
             self.draw()
             pygame.display.flip()

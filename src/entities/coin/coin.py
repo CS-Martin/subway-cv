@@ -1,7 +1,7 @@
 from src.entities.base_entity import BaseEntity
 from src.entities.state_manager import StateManager
 from src.entities.coin.coin_states import IdleState
-from src.utilities.constants import COIN_SPRITES, SCORE_FONT_SIZE, SCORE_FONT_COLOR
+from src.utilities.constants import COIN_SPRITES, SCORE_FONT_SIZE, SCORE_FONT_COLOR, FONT
 import logging
 import pygame
 
@@ -50,7 +50,7 @@ class Coin(BaseEntity):
         self.state_manager.update(self)
 
     def draw_score(self):
-        font = pygame.font.Font(None, SCORE_FONT_SIZE)
+        font = pygame.font.Font(FONT, SCORE_FONT_SIZE)
         score_text = "Coins: " + str(self.player.score)
         label = font.render(score_text, True, SCORE_FONT_COLOR)
         self.screen.blit(label, (20, 20))
