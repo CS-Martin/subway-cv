@@ -128,6 +128,7 @@ class Game:
 
             self.trains.add(train)
 
+            available_lanes.remove(lane)
             available_lanes_len -= 1
             
     def display_game_over_screen(self):
